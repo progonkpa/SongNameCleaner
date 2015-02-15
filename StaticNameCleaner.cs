@@ -19,28 +19,30 @@ namespace SongNameCleaner
                 Song songObj = new Song();
                 songObj.AbsolutePathOld = oldSong;
 
-                // Will break up the filename to the variables path, oldSong and extension.
-                // Example for oldSong variable:
-                // C:\music\Odesza - Bloom (Lane 8 Remix).mp3   =>  oldSong = "Odesza - Bloom (Lane 8 Remix)";
+                // Will break up the filename and return the songname as a string. Meanwhile, this method gives value to the public properties Path and Extension of songObj.
+                // Example returned string:
+                // input    =   "C:\music\Odesza - Bloom (Lane 8 Remix).mp3"
+                // output   =   "Odesza - Bloom (Lane 8 Remix)";
                 oldSong = DecomposeFileName(oldSong, songObj);
 
-                // Removes leading characters and replaces underscores with spaces.
+                // Removes leading characters and replaces underscores with spaces. Returns a cleaned up song name string.
                 oldSong = InitialCleanUp(oldSong);
 
-                // Determines the index of the first hypen.
-                // Extracts the artist from oldSong and places the titlecase string in the artist variable.
+                // Determines the index of the first hypen and returns that value.
+                // Extracts the artist and places the titlecase string in songObj.Artist property.
                 int firstHypen = GetArtist(oldSong, songObj);
 
                 // Extracts the title by extracting the text from the hypen (not included) to the first opening paranthese (not included) if a paranthese exists.
                 // The first letter of the title is set to uppercase.
+                // The index of the first paranthese is returned.
                 int firstParanthese = GetTitle(firstHypen, ref oldSong, songObj);
 
-                // Checks the firstParanthese variable first. If it has a usable value, the text from that value to the index of the closing paranthese, will be extracted to the remixer variable.
+                // Checks firstParanthese first. If it has a usable value (not -1), the text from that value to the index of the closing paranthese, will be extracted to the songObj.Remixer property.
                 GetRemixer(firstParanthese, oldSong, songObj);
 
+                // All previously gathered information in songObj, is used to create a new clean absolute path and written to songObj.AbsolutePathNew property.
                 ComposeNewFileName(songObj);
 
-                // Write artist, title, remixer, old absolute path and new absolute path to a song object and add to arraylist.
                 songObjects.Add(songObj);
             }
             return songObjects;
