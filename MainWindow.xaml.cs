@@ -32,9 +32,9 @@ namespace SongNameCleaner
         {
             string[] oldSongs = { inputTB.Text };
             NameCleaner nc = new NameCleaner(oldSongs);
-            string[] newSongs = nc.GetNewFileNames();
+            string[] newSongs = nc.GetSongObjects();
             outputTB.Text = newSongs[0];
-            SongToLabels(nc.GetSong());
+            SongToLabels(nc.CreateSongObject());
         }
 
         private void SongToLabels(Song song)
