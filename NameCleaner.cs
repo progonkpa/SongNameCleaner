@@ -8,123 +8,52 @@ namespace SongNameCleaner
 {
     public class NameCleaner
     {
-        private string[] oldSongs;
-        private string[] newSongs;
-        private ArrayList songObjects;
-        private readonly TextInfo ti;
-        private string artist;
-        private string title;
-        private string remixer;
-        private string extension;
-        private int firstHypen;
-        private int firstParanthese;
-        private string path;
-        private string oldSong;
-        private string oldSongAbsolutePath;
 
-
-        public NameCleaner(string[] oldSongs)
+        public static ArrayList GetSongObjects(string[] oldSongs)
         {
-            this.oldSongs = oldSongs;
-            newSongs = new string[oldSongs.Length];
-            ti = new CultureInfo("en-US", false).TextInfo;
-            songObjects = new ArrayList();
-            firstParanthese = -1;
+            ArrayList songObjects = new ArrayList();
 
-            GetSongObjects();
-        }
-
-        public string[] GetSongObjects()
-        {
             for (int i = 0; i < oldSongs.Length; i++)
             {
-                oldSong = oldSongs[i];
-                // Used by CreateSongObject();
-                oldSongAbsolutePath = oldSongs[i];
+                string oldSong = oldSongs[i];
+                Song songObj = new Song();
+                songObj.AbsolutePathOld = oldSong;
 
                 // Will break up the filename to the variables path, oldSong and extension.
                 // Example for oldSong variable:
                 // C:\music\Odesza - Bloom (Lane 8 Remix).mp3   =>  oldSong = "Odesza - Bloom (Lane 8 Remix)";
-                DecomposeFileName();
+                oldSong = DecomposeFileName(oldSong, songObj);
 
                 // Removes leading characters and replaces underscores with spaces.
-                InitialCleanUp();
+                oldSong = InitialCleanUp(oldSong);
 
                 // Determines the index of the first hypen.
                 // Extracts the artist from oldSong and places the titlecase string in the artist variable.
-                GetArtist();
+                int firstHypen = GetArtist(oldSong, songObj);
 
                 // Extracts the title by extracting the text from the hypen (not included) to the first opening paranthese (not included) if a paranthese exists.
                 // The first letter of the title is set to uppercase.
-                GetTitle();
+                int firstParanthese = GetTitle(firstHypen, oldSong, songObj);
 
                 // Checks the firstParanthese variable first. If it has a usable value, the text from that value to the index of the closing paranthese, will be extracted to the remixer variable.
-                GetRemixer();
+                GetRemixer(firstParanthese, oldSong, songObj);
 
-                //string newSong = ComposeNewFileName();
-                //newSongs[i] = newSong;
-
-                // Write artist, title, remixer, old absolute path and new absolute path to a song object and add to arraylist.
-                songObjects.Add(CreateSongObject());
-            }
-            return newSongs;
-        }
-
-        public string[] TestSongNamesCreation()
-        {
-            for (int i = 0; i < oldSongs.Length; i++)
-            {
-                oldSong = oldSongs[i];
-                // Used by CreateSongObject();
-                oldSongAbsolutePath = oldSongs[i];
-
-                // Will break up the filename to the variables path, oldSong and extension.
-                // Example for oldSong variable:
-                // C:\music\Odesza - Bloom (Lane 8 Remix).mp3   =>  oldSong = "Odesza - Bloom (Lane 8 Remix)";
-                DecomposeFileName();
-
-                // Removes leading characters and replaces underscores with spaces.
-                InitialCleanUp();
-
-                // Determines the index of the first hypen.
-                // Extracts the artist from oldSong and places the titlecase string in the artist variable.
-                GetArtist();
-
-                // Extracts the title by extracting the text from the hypen (not included) to the first opening paranthese (not included) if a paranthese exists.
-                // The first letter of the title is set to uppercase.
-                GetTitle();
-
-                // Checks the firstParanthese variable first. If it has a usable value, the text from that value to the index of the closing paranthese, will be extracted to the remixer variable.
-                GetRemixer();
-
-                string newSong = ComposeNewFileName();
-                newSongs[i] = newSong;
+                ComposeNewFileName(songObj);
 
                 // Write artist, title, remixer, old absolute path and new absolute path to a song object and add to arraylist.
-                songObjects.Add(CreateSongObject());
+                songObjects.Add(songObj);
             }
-            return newSongs;
+            return songObjects;
         }
 
-        public Song CreateSongObject()
+        private static string DecomposeFileName(string oldSong, Song songObj)
         {
-            Song songObj = new Song();
-            songObj.artist = artist;
-            songObj.title = title;
-            songObj.remixer = remixer;
-            songObj.absolutePathOld = oldSongAbsolutePath;
-            songObj.absolutePathNew = ComposeNewFileName();
-            return songObj;
+            songObj.Path = Path.GetDirectoryName(oldSong);
+            songObj.Extension = Path.GetExtension(oldSong);
+            return Path.GetFileNameWithoutExtension(oldSong);
         }
 
-        private void DecomposeFileName()
-        {
-            path = Path.GetDirectoryName(oldSong);
-            extension = Path.GetExtension(oldSong);
-            oldSong = Path.GetFileNameWithoutExtension(oldSong);
-        }
-
-        private void InitialCleanUp()
+        private static string InitialCleanUp(string oldSong)
         {
             oldSong = oldSong.Replace("_", " ");
             oldSong.Trim();
@@ -132,38 +61,42 @@ namespace SongNameCleaner
             {
                 oldSong = oldSong.Substring(1);
             }
+            return oldSong;
         }
 
-        private void GetArtist()
+        private static int GetArtist(string oldSong, Song songObj)
         {
-            firstHypen = oldSong.IndexOf("-");
-            artist = oldSong.Substring(0, firstHypen).Trim();
-            artist = ti.ToTitleCase(artist);
+            int firstHypen = oldSong.IndexOf("-");
+            songObj.Artist = oldSong.Substring(0, firstHypen).Trim();
+            TextInfo ti = new CultureInfo("en-US", false).TextInfo;
+            songObj.Artist = ti.ToTitleCase(songObj.Artist);
+            return firstHypen;
         }
 
-        private void GetTitle()
+        private static int GetTitle(int firstHypen, string oldSong, Song songObj)
         {
             oldSong = oldSong.Substring(firstHypen + 1).Trim();
             string firstLetter = oldSong.Substring(0, 1).ToUpper();
-            title = oldSong.Remove(0, 1).Insert(0, firstLetter);
-            firstParanthese = GetFirstParantheseIndex(title);
+            oldSong = oldSong.Remove(0, 1).Insert(0, firstLetter);
+            int firstParanthese = GetFirstParantheseIndex(songObj.Title);
             if (firstParanthese == -1)
             {
-                remixer = "";
+                songObj.Remixer = "";
+                songObj.Title = oldSong;
             }
             else
             {
-                title = title.Substring(0, firstParanthese).Trim();
+                songObj.Title = oldSong.Substring(0, firstParanthese).Trim();
             }
+            return firstParanthese;
         }
 
-        private void GetRemixer()
+        private static void GetRemixer(int firstParanthese, string oldSong, Song songObj)
         {
             if (firstParanthese != -1)
             {
                 // Get the text between the parantheses
-                remixer = oldSong.Substring(firstParanthese + 1);
-                firstParanthese = -1;
+                string remixer = oldSong.Substring(firstParanthese + 1);
                 int length = remixer.Length;
                 if (remixer.Contains(")"))
                 {
@@ -188,39 +121,40 @@ namespace SongNameCleaner
                 else if (temp.Contains(" mix"))
                 {
                     remixer = remixer.Remove(temp.IndexOf(" mix", " mix".Length));
-                }   
+                }
+                songObj.Remixer = remixer;
             }
         }
-        private int GetFirstParantheseIndex(string toExamine)
+        private static int GetFirstParantheseIndex(string toExamine)
         {
             int index = -1;
             if (toExamine.Contains("("))
             {
                 index = toExamine.IndexOf("(", StringComparison.Ordinal);
             }
-            else if (title.Contains("["))
+            else if (toExamine.Contains("["))
             {
                 index = toExamine.IndexOf("[", StringComparison.Ordinal);
             }
-            else if (title.Contains("{"))
+            else if (toExamine.Contains("{"))
             {
                 index = toExamine.IndexOf("{", StringComparison.Ordinal);
             }
             return index;
         }
 
-        private string ComposeNewFileName()
+        private static void ComposeNewFileName(Song songObj)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(path);
-            sb.Append(artist);
+            sb.Append(songObj.Path);
+            sb.Append(songObj.Artist);
             sb.Append(" - ");
-            sb.Append(title);
+            sb.Append(songObj.Title);
             sb.Append(" (");
-            sb.Append(remixer);
+            sb.Append(songObj.Remixer);
             sb.Append(" remix)");
-            sb.Append(extension);
-            return sb.ToString();
+            sb.Append(songObj.Extension);
+            songObj.AbsolutePathNew = sb.ToString();
         }
 
     }

@@ -39,9 +39,9 @@ namespace SongNameCleaner
 
         private void SongToLabels(Song song)
         {
-            artistLBL.Content = song.artist;
-            titleLBL.Content = song.title;
-            remixerLBL.Content = song.remixer;
+            artistLBL.Content = song.Artist;
+            titleLBL.Content = song.Title;
+            remixerLBL.Content = song.Remixer;
         }
     }
 }
