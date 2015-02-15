@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows;
+using System.Collections;
 using Ookii.Dialogs;
 
 namespace SongNameCleaner
@@ -31,10 +32,8 @@ namespace SongNameCleaner
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             string[] oldSongs = { inputTB.Text };
-            NameCleaner nc = new NameCleaner(oldSongs);
-            string[] newSongs = nc.GetSongObjects();
-            outputTB.Text = newSongs[0];
-            SongToLabels(nc.CreateSongObject());
+            ArrayList ar = StaticNameCleaner.GetSongObjects(oldSongs);
+            SongToLabels((Song)ar[0]);
         }
 
         private void SongToLabels(Song song)
@@ -42,6 +41,7 @@ namespace SongNameCleaner
             artistLBL.Content = song.Artist;
             titleLBL.Content = song.Title;
             remixerLBL.Content = song.Remixer;
+            outputTB.Text = song.AbsolutePathNew;
         }
     }
 }

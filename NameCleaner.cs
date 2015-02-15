@@ -6,7 +6,7 @@ using System.Collections;
 
 namespace SongNameCleaner
 {
-    public class NameCleaner
+    public class StaticNameCleaner
     {
 
         public static ArrayList GetSongObjects(string[] oldSongs)
@@ -33,7 +33,7 @@ namespace SongNameCleaner
 
                 // Extracts the title by extracting the text from the hypen (not included) to the first opening paranthese (not included) if a paranthese exists.
                 // The first letter of the title is set to uppercase.
-                int firstParanthese = GetTitle(firstHypen, oldSong, songObj);
+                int firstParanthese = GetTitle(firstHypen, ref oldSong, songObj);
 
                 // Checks the firstParanthese variable first. If it has a usable value, the text from that value to the index of the closing paranthese, will be extracted to the remixer variable.
                 GetRemixer(firstParanthese, oldSong, songObj);
@@ -73,12 +73,12 @@ namespace SongNameCleaner
             return firstHypen;
         }
 
-        private static int GetTitle(int firstHypen, string oldSong, Song songObj)
+        private static int GetTitle(int firstHypen, ref string oldSong, Song songObj)
         {
             oldSong = oldSong.Substring(firstHypen + 1).Trim();
             string firstLetter = oldSong.Substring(0, 1).ToUpper();
             oldSong = oldSong.Remove(0, 1).Insert(0, firstLetter);
-            int firstParanthese = GetFirstParantheseIndex(songObj.Title);
+            int firstParanthese = GetFirstParantheseIndex(oldSong);
             if (firstParanthese == -1)
             {
                 songObj.Remixer = "";

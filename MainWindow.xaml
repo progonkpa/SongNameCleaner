@@ -7,7 +7,7 @@
         <TextBox x:Name="inputTB" HorizontalAlignment="Left" Height="23" Margin="25,49,0,0" TextWrapping="Wrap" Text="D:\01_Yoko_Duo_-_Blowfish_(Lake People Remix).mp3" VerticalAlignment="Top" Width="476"/>
         <Button x:Name="cleanBTN" Content="Clean" HorizontalAlignment="Left" Margin="26,94,0,0" VerticalAlignment="Top" Width="75" Height="29" Click="Button_Click"/>
         <Label Content="Output:" HorizontalAlignment="Left" Margin="26,145,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.568,0.445" Width="75"/>
-        <Label Content="Input:" HorizontalAlignment="Left" Margin="26,21,0,226.6" Width="75"/>
+        <Label Content="Input:" HorizontalAlignment="Left" Margin="25,22,0,503.8" Width="75"/>
         <TextBox x:Name="outputTB" HorizontalAlignment="Left" Height="23" Margin="25,176,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="476"/>
         <Label Content="Artist:" HorizontalAlignment="Left" Margin="26,204,0,0" VerticalAlignment="Top"/>
         <Label Content="Title:" HorizontalAlignment="Left" Margin="26,230,0,0" VerticalAlignment="Top"/>
@@ -15,7 +15,7 @@
         <Label x:Name="artistLBL" Content="" HorizontalAlignment="Left" Margin="108,204,0,0" VerticalAlignment="Top"/>
         <Label x:Name="remixerLBL" Content="" HorizontalAlignment="Left" Margin="108,256,0,0" VerticalAlignment="Top"/>
         <Label x:Name="titleLBL" Content="" HorizontalAlignment="Left" Margin="108,230,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="browseBTN" Content="Browse..." HorizontalAlignment="Left" Margin="27,337,0,0" VerticalAlignment="Top" Width="82" Click="Button_Click_1" Height="24"/>
+        <Button x:Name="browseBTN" Content="Browse..." HorizontalAlignment="Left" Margin="27,337,0,0" VerticalAlignment="Top" Width="82" Click="Button_Click" Height="24"/>
         <Label x:Name="selectedPathLBL" Content="" HorizontalAlignment="Left" Margin="110,337,0,0" VerticalAlignment="Top" Width="389"/>
         <Label x:Name="resultLBL" Content="" HorizontalAlignment="Left" Margin="28,361,0,0" VerticalAlignment="Top" Width="9"/>
         <GroupBox Header="Select folder with music" HorizontalAlignment="Left" Margin="19,312,0,0" VerticalAlignment="Top" Height="87" Width="714"/>
