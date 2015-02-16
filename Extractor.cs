@@ -27,7 +27,7 @@ namespace SongNameCleaner
                 oldSong = DecomposeFileName(oldSong, songObj);
 
                 // Removes leading characters and replaces underscores with spaces. Returns a cleaned up song name string.
-                oldSong = InitialCleanUp(oldSong);
+                oldSong = CleanUp(oldSong);
 
                 // Determines the index of the first hypen and returns that value.
                 // Extracts the artist and places the titlecase string in songObj.Artist property.
@@ -56,7 +56,7 @@ namespace SongNameCleaner
             return Path.GetFileNameWithoutExtension(oldSong);
         }
 
-        private static string InitialCleanUp(string oldSong)
+        private static string CleanUp(string oldSong)
         {
             oldSong = oldSong.Replace("_", " ");
             oldSong = oldSong.Replace("—", "-");
@@ -75,11 +75,7 @@ namespace SongNameCleaner
         private static int GetArtist(string oldSong, Song songObj)
         {
             int firstHypen = oldSong.IndexOf("-");
-            if (firstHypen == -1)
-            {
-                songObj.Artist = oldSong.Substring(0);
-            }
-            else
+            if (firstHypen != -1)
             {
                 songObj.Artist = oldSong.Substring(0, firstHypen).Trim();
                 TextInfo ti = new CultureInfo("en-US", false).TextInfo;
@@ -90,23 +86,29 @@ namespace SongNameCleaner
 
         private static int GetTitle(int firstHypen, ref string oldSong, Song songObj)
         {
+            // If there is a hypen, remove all from start to hypen incl.
             if (firstHypen != -1)
             {
                 oldSong = oldSong.Substring(firstHypen + 1).Trim();
-                string firstLetter = oldSong.Substring(0, 1).ToUpper();
-                oldSong = oldSong.Remove(0, 1).Insert(0, firstLetter);
             }
+            oldSong = FirstLetterToCap(oldSong);
             int firstParanthese = GetFirstParantheseIndex(oldSong);
+
+            // If there is a paranthese, the title is extracted.
+            if (firstParanthese != -1)
+            {
+                songObj.Title = oldSong.Substring(0, firstParanthese).Trim();
+            }
             return firstParanthese;
         }
 
+
         private static void GetRemixer(int firstParanthese, string oldSong, Song songObj)
         {
+            // If there isn't a paranthese, no remixer exists and oldSong becomes the title.
             if (firstParanthese == -1)
             {
-                songObj.Remixer = "";
-                if (!songObj.Artist.Equals(oldSong))
-                    songObj.Title = oldSong;
+                songObj.Title = oldSong;
             }
             else
             {
@@ -127,17 +129,24 @@ namespace SongNameCleaner
                 }
                 remixer = remixer.Substring(0, length);
 
-                // Remove the mix or remix-portion
+                // Remove the mix or remix-portion for remixer extraction.
                 string temp = remixer.ToLower();
                 if (temp.Contains(" remix"))
                 {
                     remixer = remixer.Remove(temp.IndexOf(" remix"), " remix".Length);
+                    songObj.HasRemixer = true;
                 }
                 else if (temp.Contains(" mix"))
                 {
                     remixer = remixer.Remove(temp.IndexOf(" mix"), " mix".Length);
+                    songObj.HasRemixer = true;
                 }
-                songObj.Remixer = remixer;
+                else
+                {
+                    songObj.HasRemixer = false;
+                }
+                if (remixer != String.Empty)
+                    songObj.Remixer = FirstLetterToCap(remixer);
             }
         }
         private static int GetFirstParantheseIndex(string toExamine)
@@ -162,14 +171,28 @@ namespace SongNameCleaner
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(songObj.Path);
+            // Make songObjects less heavy
+            songObj.Path = null;
             sb.Append(songObj.Artist);
             sb.Append(" - ");
             sb.Append(songObj.Title);
-            sb.Append(" (");
-            sb.Append(songObj.Remixer);
-            sb.Append(" remix)");
+            if (songObj.HasRemixer)
+            {
+                sb.Append(" (");
+                sb.Append(songObj.Remixer);
+                sb.Append(" remix)");
+            }
             sb.Append(songObj.Extension);
+            // Make songObjects less heavy
+            songObj.Extension = null;
             songObj.AbsolutePathNew = sb.ToString();
+        }
+
+        private static string FirstLetterToCap(string oldSong)
+        {
+            string firstLetter = oldSong.Substring(0, 1).ToUpper();
+            oldSong = oldSong.Remove(0, 1).Insert(0, firstLetter);
+            return oldSong;
         }
 
     }

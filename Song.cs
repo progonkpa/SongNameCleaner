@@ -15,5 +15,6 @@ namespace SongNameCleaner
         public string AbsolutePathOld { get; set; }
         public string AbsolutePathNew { get; set; }
         public string Extension { get; set; }
+        public bool HasRemixer { get; set; }
     }
 }

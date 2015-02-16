@@ -5,11 +5,12 @@
     <Grid>
         <GroupBox Header="Select folder with music files" HorizontalAlignment="Left" Margin="9,24,0,0" VerticalAlignment="Top" Height="61" Width="738"/>
         <Button x:Name="browseBTN" Content="Browse..." HorizontalAlignment="Left" Margin="19,45,0,0" VerticalAlignment="Top" Width="82" Click="browseBTN_Click" Height="24"/>
-        <Label x:Name="selectedFolderLBL" Content="" HorizontalAlignment="Left" Margin="107,46,0,0" VerticalAlignment="Top" Width="592"/>
+        <Label x:Name="selectedFolderLBL" Content="" HorizontalAlignment="Left" Margin="107,43,0,0" VerticalAlignment="Top" Width="592"/>
         <GroupBox Header="Rewrite" HorizontalAlignment="Left" Margin="9,99,0,0" VerticalAlignment="Top" Height="83" Width="738"/>
         <Button x:Name="FilenamesRewriteBTN" Content="Filenames" HorizontalAlignment="Left" Margin="19,120,0,0" VerticalAlignment="Top" Width="82" Click="FilenamesRewriteBTN_Click" Height="24"/>
-        <Label x:Name="fileNamesResultLBL" Content="" HorizontalAlignment="Left" Margin="107,121,0,0" VerticalAlignment="Top" Width="592"/>
+        <Label x:Name="fileNamesResultLBL" Content="" HorizontalAlignment="Left" Margin="107,118,0,0" VerticalAlignment="Top" Width="592"/>
         <Button x:Name="Id3RewriteBTN" Content="ID3-tags" HorizontalAlignment="Left" Margin="19,149,0,0" VerticalAlignment="Top" Width="82" Click="Id3RewriteBTN_Click" Height="24"/>
-        <Label x:Name="id3ResultLBL" Content="" HorizontalAlignment="Left" Margin="107,150,0,0" VerticalAlignment="Top" Width="592"/>
+        <Label x:Name="id3ResultLBL" Content="" HorizontalAlignment="Left" Margin="107,147,0,0" VerticalAlignment="Top" Width="592"/>
+        <!--<Label Name="TestLabel" Content="TestLabel" HorizontalAlignment="Left" Margin="19,213,0,0" VerticalAlignment="Top"/>-->
     </Grid>
 </Window>
