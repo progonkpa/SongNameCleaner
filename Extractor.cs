@@ -42,7 +42,7 @@ namespace SongNameCleaner
                 GetRemixer(firstParanthese, oldSong, songObj);
 
                 // All previously gathered information in songObj, is used to create a new clean absolute path and written to songObj.AbsolutePathNew property.
-                ComposeNewFileName(songObj);
+                ComposeNewFileName(firstHypen, songObj);
 
                 songObjects.Add(songObj);
             }
@@ -167,14 +167,15 @@ namespace SongNameCleaner
             return index;
         }
 
-        private static void ComposeNewFileName(Song songObj)
+        private static void ComposeNewFileName(int firstHypen, Song songObj)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(songObj.Path);
             // Make songObjects less heavy
             songObj.Path = null;
             sb.Append(songObj.Artist);
-            sb.Append(" - ");
+            if (firstHypen != -1)
+                sb.Append(" - ");
             sb.Append(songObj.Title);
             if (songObj.HasRemixer)
             {
