@@ -47,5 +47,10 @@ namespace SongNameCleaner
             }
             return unprocessedFileCount;
         }
+
+        private static string FormTitleWithRemixer(Song song)
+        {
+            return song.Title + " (" + song.Remixer + " remix)";
+        }
     }
 }

@@ -81,7 +81,7 @@ namespace SongNameCleaner
 
         private void Id3RewriteBTN_Click(object sender, RoutedEventArgs e)
         {
-            fileNamesResultLBL.Content = "Working...";
+            id3ResultLBL.Content = "Working...";
             try
             {
                 int result = Modifier.WriteNewId3Tags(songList);
@@ -94,7 +94,7 @@ namespace SongNameCleaner
             }
             catch (NullReferenceException ex)
             {
-                fileNamesResultLBL.Content = "No files where selected or processed.";
+                id3ResultLBL.Content = "No files where selected or processed.";
                 Console.Error.Write(ex.StackTrace);
             }
         }
