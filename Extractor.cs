@@ -18,6 +18,7 @@ namespace SongNameCleaner
             {
                 string oldSong = oldSongs[i];
                 Song songObj = new Song();
+                // Save the original filename for later when the rename action needs to happen.
                 songObj.AbsolutePathOld = oldSong;
 
                 // Will break up the filename and return the songname as a string. Meanwhile, this method gives value to the public properties Path and Extension of songObj.
@@ -46,6 +47,7 @@ namespace SongNameCleaner
 
                 songObjects.Add(songObj);
             }
+
             return songObjects;
         }
 
